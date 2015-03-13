@@ -17,7 +17,6 @@ function transform(node) {
 
   var nested = recursiveNestedContext(node);
   if (nested) {
-    // TODO the property could be on multiple lines, need to update all of them
     addIndent(node, nested);
     updateLineComments(node, nested);
   }
