@@ -56,6 +56,19 @@ element
 	.end()
 	.accordion();
 
+this.buttons = allButtons
+	.map(function() {
+		return $( this ).button( "widget" )[ 0 ];
+	})
+		.removeClass( "ui-corner-all ui-corner-left ui-corner-right" )
+		.filter( ":first" )
+			.addClass( rtl ? "ui-corner-right" : "ui-corner-left" )
+		.end()
+		.filter( ":last" )
+			.addClass( rtl ? "ui-corner-left" : "ui-corner-right" )
+		.end()
+	.end();
+
 this.active.children( ".ui-accordion-header-icon" )
 	.removeClass( icons.header )
 	.addClass( icons.activeHeader );
@@ -64,6 +77,15 @@ this.headers
 	.removeClass( "ui-accordion-icons" )
 	.children( ".ui-accordion-header-icon" )
 		.remove();
+
+toShow
+	.attr( "aria-hidden", "false" )
+	.prev()
+		.attr( {
+			"aria-selected": "true",
+			"aria-expanded": "true",
+			tabIndex: 0
+		} );
 
 if ( event.keyCode === $.ui.keyCode.UP && event.ctrlKey ) {
 	$( event.currentTarget ).prev().focus();
@@ -84,6 +106,7 @@ element
 	.children()
 		// comment
 		.bla()
+		// comment
 		// comment
 		.blu()
 	.end()

@@ -17,6 +17,7 @@ function transform(node) {
 
   var nested = recursiveNestedContext(node);
   if (nested) {
+    // TODO the property could be on multiple lines, need to update all of them
     addIndent(node.property.startToken, nested);
     updateLineComments(node, nested);
   }
@@ -32,7 +33,7 @@ function indented(node) {
 }
 
 function oneDown(node) {
-  return /^(:?parent|parents|children|find|next|prev|nextAll|prevAll|closest|not|first|last|addBack)$/.test(node.property.name) && indented(node);
+  return /^(:?map|filter|parent|parents|children|find|next|prev|nextAll|prevAll|closest|not|first|last|addBack)$/.test(node.property.name) && indented(node);
 }
 
 function objectWithMemberExpressionCallee(node) {
@@ -67,8 +68,8 @@ function updateLineComments(node, nested) {
   while (search && search !== node.startToken) {
     search = _tk.findPrevNonEmpty(search);
     if (_tk.isComment(search)) {
-      addIndent(search, nested);
-      return;
+      var nextIndent = _tk.findNext(search, _tk.isIndent);
+      _tk.findPrev(search, _tk.isIndent).value = nextIndent.value;
     }
   }
 }
