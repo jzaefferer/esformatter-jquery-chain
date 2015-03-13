@@ -11,3 +11,4 @@ var formattedCode = esformatter.format(codeStr, {
 });
 console.log(formattedCode);
 assert.equal(formattedCode, codeStr);
+console.log("✓ all good");

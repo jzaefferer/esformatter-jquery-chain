@@ -29,11 +29,12 @@ function oneUp(node) {
 
 function indented(node) {
   var token = node.property.startToken.prev.prev;
-  return _tk.isEmpty(token) && token.value.length;
+  return !!(_tk.isEmpty(token) && token.value.length);
 }
 
 function oneDown(node) {
-  return /^(:?map|filter|parent|parents|children|find|next|prev|nextAll|prevAll|closest|not|first|last|addBack)$/.test(node.property.name) && indented(node);
+  return /^(:?map|filter|parent|parents|children|find|next|prev|nextAll|prevAll|closest|not|first|last|addBack)$/
+    .test(node.property.name) && indented(node);
 }
 
 function objectWithMemberExpressionCallee(node) {
@@ -43,10 +44,10 @@ function objectWithMemberExpressionCallee(node) {
 
 function recursiveNestedContext(node) {
   var nested = 0;
+  if (!indented(node)) {
+    return 0;
+  }
   while (objectWithMemberExpressionCallee(node)) {
-    if (!indented(node)) {
-      return 0;
-    }
     if (oneUp(node)) {
       nested -= 1;
     }
