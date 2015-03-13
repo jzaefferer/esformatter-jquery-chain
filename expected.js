@@ -57,9 +57,9 @@ element
 	.accordion();
 
 this.buttons = allButtons
-	.map(function() {
+	.map( function() {
 		return $( this ).button( "widget" )[ 0 ];
-	})
+	} )
 		.removeClass( "ui-corner-all ui-corner-left ui-corner-right" )
 		.filter( ":first" )
 			.addClass( rtl ? "ui-corner-right" : "ui-corner-left" )
@@ -86,6 +86,14 @@ toShow
 			"aria-expanded": "true",
 			tabIndex: 0
 		} );
+
+x
+	.prev()
+		.attr( "a", "b", {
+			a: b
+		}, d, [
+			1, 2, 3
+		] );
 
 if ( event.keyCode === $.ui.keyCode.UP && event.ctrlKey ) {
 	$( event.currentTarget ).prev().focus();

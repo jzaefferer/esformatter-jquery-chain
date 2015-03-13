@@ -9,6 +9,6 @@ esformatter.register(plugin);
 var formattedCode = esformatter.format(codeStr, {
 	preset: "jquery"
 });
-console.log(formattedCode);
+// console.log(formattedCode);
 assert.equal(formattedCode, codeStr);
 console.log("✓ all good");

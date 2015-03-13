@@ -18,7 +18,7 @@ function transform(node) {
   var nested = recursiveNestedContext(node);
   if (nested) {
     // TODO the property could be on multiple lines, need to update all of them
-    addIndent(node.property.startToken, nested);
+    addIndent(node, nested);
     updateLineComments(node, nested);
   }
 }
@@ -59,9 +59,30 @@ function recursiveNestedContext(node) {
   return nested;
 }
 
-function addIndent(token, nested) {
-  var indent = _tk.findPrev(token, _tk.isIndent);
+function hasBr(start, end) {
+  return _tk.findInBetween(start, end, _tk.isBr);
+}
+
+function addIndent(node, nested) {
+
+  // The easy part: Indent the MemberExpression property
+  var indent = _tk.findPrev(node.property.startToken, _tk.isIndent);
   indent.value += repeat(_opts.value, nested);
+
+  // The hard part: Indent multi-line arguments of the parent call expression
+  if (node.parent.type === 'CallExpression' && node.parent.arguments.length) {
+    var args = node.parent.arguments;
+    var start = args[0].startToken;
+    var end = args[args.length - 1].endToken;
+    if (hasBr(start, end)) {
+      while (end != start) {
+        end = end.prev;
+        if (_tk.isIndent(end)) {
+          end.value += repeat(_opts.value, nested);
+        }
+      }
+    }
+  }
 }
 
 function updateLineComments(node, nested) {
