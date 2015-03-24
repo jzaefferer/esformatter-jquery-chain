@@ -1,11 +1,9 @@
-var repeat = require('mout/string/repeat');
 var rocambole = require('rocambole');
-var _tk = require('rocambole-token');
-
-var _opts;
+var token = require('rocambole-token');
+var indent = require('rocambole-indent');
 
 exports.setOptions = function(opts) {
-  _opts = opts.indent;
+  indent.setOptions(opts.indent);
 };
 
 exports.transformAfter = function(ast) {
@@ -18,7 +16,7 @@ function transform(node) {
   var nested = recursiveNestedContext(node);
   if (nested) {
     addIndent(node, nested);
-    updateLineComments(node, nested);
+    indent.alignComments(node);
   }
 }
 
@@ -27,8 +25,8 @@ function oneUp(node) {
 }
 
 function indented(node) {
-  var token = node.property.startToken.prev.prev;
-  return !!(_tk.isEmpty(token) && token.value.length);
+  var indentToken = node.property.startToken.prev.prev;
+  return !!(token.isEmpty(indentToken) && indentToken.value.length);
 }
 
 function oneDown(node) {
@@ -59,38 +57,20 @@ function recursiveNestedContext(node) {
 }
 
 function hasBr(start, end) {
-  return _tk.findInBetween(start, end, _tk.isBr);
+  return token.findInBetween(start, end, token.isBr);
 }
 
 function addIndent(node, nested) {
-
   // The easy part: Indent the MemberExpression property
-  var indent = _tk.findPrev(node.property.startToken, _tk.isIndent);
-  indent.value += repeat(_opts.value, nested);
+  indent.addLevel(node.property.startToken, nested);
 
   // The hard part: Indent multi-line arguments of the parent call expression
   if (node.parent.type === 'CallExpression' && node.parent.arguments.length) {
     var args = node.parent.arguments;
     var start = args[0].startToken;
-    var end = args[args.length - 1].endToken;
+    var end = args[args.length - 1].endToken.next;
     if (hasBr(start, end)) {
-      while (end != start) {
-        end = end.prev;
-        if (_tk.isIndent(end)) {
-          end.value += repeat(_opts.value, nested);
-        }
-      }
-    }
-  }
-}
-
-function updateLineComments(node, nested) {
-  var search = node.property.startToken;
-  while (search && search !== node.startToken) {
-    search = _tk.findPrevNonEmpty(search);
-    if (_tk.isComment(search)) {
-      var nextIndent = _tk.findNext(search, _tk.isIndent);
-      _tk.findPrev(search, _tk.isIndent).value = nextIndent.value;
+      indent.inBetween(start, end, nested);
     }
   }
 }

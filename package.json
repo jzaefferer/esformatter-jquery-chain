@@ -14,9 +14,9 @@
     "esformatter-plugin"
   ],
   "dependencies": {
-    "mout": "0.11.0",
     "rocambole": "0.3.6",
-    "rocambole-token": "1.2.1"
+    "rocambole-token": "1.2.1",
+    "rocambole-indent": "1.0.0"
   },
   "devDependencies": {
     "esformatter": "0.5.0"
