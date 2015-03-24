@@ -1,6 +1,6 @@
 {
   "name": "esformatter-jquery-chain",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Format chained calls with jQuery context specific nesting",
   "author": "Jörn Zaefferer",
   "license": "MIT",
